@@ -6,15 +6,21 @@ public class UserMenu {
     Scanner input;
     boolean keepGoing;
     String userChoice;
+    boolean isAuthorized;
 
     UserMenu() {
         input = new Scanner(System.in);
         keepGoing = true;
+        isAuthorized = false;
     }
 
     public void runCLI() {
         do {
         userChoice = input.nextLine();
+        if (!isAuthorized) {
+            System.out.println(getAuthorization());
+            continue;
+        }
         switch (userChoice) {
             case("new"):
                 System.out.println(newReleases());
@@ -63,4 +69,14 @@ public class UserMenu {
                 "Love in the Air\n" +
                 "Last line of the project";
     }
+    private String getAuthorization() {
+        String message = "Please, provide access for application.";
+        if (userChoice.equals("auth")) {
+            isAuthorized = true;
+            message = "url to Oath authorization\n" +
+                    "---SUCCESS---";
+        }
+        return message;
+    }
+
 }
