@@ -4,13 +4,11 @@ import java.util.Scanner;
 
 public class UserMenu {
     Scanner input;
-    boolean keepGoing;
     String userChoice;
     boolean isAuthorized;
 
     UserMenu() {
         input = new Scanner(System.in);
-        keepGoing = true;
         isAuthorized = false;
     }
 
@@ -35,11 +33,10 @@ public class UserMenu {
                 System.out.println(moodPlaylists());
                 break;
             case("exit"):
-                System.out.println("---GOODBYE!---");
-                keepGoing = false;
+                exitApp();
                 break;
         }
-    } while (keepGoing);
+    } while (true);
 }
     private String newReleases() {
         return "---NEW RELEASES---\n" +
@@ -71,12 +68,19 @@ public class UserMenu {
     }
     private String getAuthorization() {
         String message = "Please, provide access for application.";
+        if (userChoice.equals("exit")) {
+            exitApp();
+        }
         if (userChoice.equals("auth")) {
             isAuthorized = true;
-            message = "url to Oath authorization\n" +
+            message = "https://accounts.spotify.com/authorize?client_id=YOURCLIENT&redirect_uri=https://www.example.com&response_type=code\n" +
                     "---SUCCESS---";
         }
         return message;
+    }
+    private void exitApp() {
+        System.out.println("---GOODBYE!---");
+        System.exit(0);
     }
 
 }
