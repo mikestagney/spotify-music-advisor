@@ -73,7 +73,7 @@ public class UserMenu {
         }
         if (userChoice.equals("auth")) {
             isAuthorized = true;
-            message = "https://accounts.spotify.com/authorize?client_id=YOURCLIENT&redirect_uri=https://www.example.com&response_type=code\n" +
+            message = "https://accounts.spotify.com/authorize?client_id=6a3cee939e094944a5b8c547da47dba2&redirect_uri=https://localhost:8080&response_type=code\n" +
                     "---SUCCESS---";
         }
         return message;
