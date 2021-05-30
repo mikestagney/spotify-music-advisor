@@ -6,6 +6,7 @@ public class UserMenu {
     Scanner input;
     String userChoice;
     boolean isAuthorized;
+    WebConnection webConnection;
 
     UserMenu() {
         input = new Scanner(System.in);
@@ -71,11 +72,13 @@ public class UserMenu {
         if (userChoice.equals("exit")) {
             exitApp();
         }
-        if (userChoice.equals("auth")) {
-            isAuthorized = true;
-            message = "https://accounts.spotify.com/authorize?client_id=6a3cee939e094944a5b8c547da47dba2&redirect_uri=https://localhost:8080&response_type=code\n" +
+        if (!userChoice.equals("auth")) return message;
+
+        WebConnection web = new WebConnection();
+        isAuthorized = true;
+        message = "https://accounts.spotify.com/authorize?client_id=6a3cee939e094944a5b8c547da47dba2&redirect_uri=https://localhost:8080&response_type=code\n" +
                     "---SUCCESS---";
-        }
+
         return message;
     }
     private void exitApp() {
