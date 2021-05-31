@@ -13,11 +13,11 @@ public class UserMenu {
         isAuthorized = false;
     }
 
-    public void runCLI() {
+    public void runCLI(String[] args) {
         do {
         userChoice = input.nextLine();
         if (!isAuthorized) {
-            System.out.println(getAuthorization());
+            System.out.println(getAuthorization(args));
             continue;
         }
         switch (userChoice) {
@@ -67,17 +67,21 @@ public class UserMenu {
                 "Love in the Air\n" +
                 "Last line of the project";
     }
-    private String getAuthorization() {
+    private String getAuthorization(String[] args) {
         String message = "Please, provide access for application.";
         if (userChoice.equals("exit")) {
             exitApp();
         }
         if (!userChoice.equals("auth")) return message;
 
-        WebConnection web = new WebConnection();
+        WebConnection web = new WebConnection(args);
+        System.out.println("use this link to request the access code:");
+        System.out.println(web.getAccessLink());
+        System.out.println(web.getCode());
+
+
         isAuthorized = true;
-        message = "https://accounts.spotify.com/authorize?client_id=6a3cee939e094944a5b8c547da47dba2&redirect_uri=https://localhost:8080&response_type=code\n" +
-                    "---SUCCESS---";
+        message = "---SUCCESS---";
 
         return message;
     }
