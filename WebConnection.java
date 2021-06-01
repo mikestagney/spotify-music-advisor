@@ -4,7 +4,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
-import javax.imageio.IIOException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -68,7 +67,7 @@ public class WebConnection {
         String message = "Authorization code not found. Try again.";
         try {
             server.start();
-            //Thread.sleep(1);  // was 10000
+            Thread.sleep(10000);  // was 10000
 
             String query = "";
             if (!queryholder.isEmpty()) {
@@ -86,15 +85,16 @@ public class WebConnection {
                     }
                 }
             }
+
             client = HttpClient.newBuilder().build();
             // need to figure out how to send this message to the browser
             request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:8080"))
-                    //.GET(HttpRequest.BodyPublishers.ofString(message))
+                    .POST(HttpRequest.BodyPublishers.ofString(message))
                     .build();
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        } catch (IOException | InterruptedException e) {  // InterruptedException e  for thread.sleep
+        } catch (IOException | InterruptedException e) {  // InterruptedException e  for thread.sleep   IOException |
             e.printStackTrace();
 
         } finally {
@@ -123,7 +123,10 @@ public class WebConnection {
                     .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
                     .build();
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            tokens = response.body();
+            if (response.body() != null) {
+                tokens = response.body();
+            }
+
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
