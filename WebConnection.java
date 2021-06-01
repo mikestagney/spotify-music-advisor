@@ -65,9 +65,10 @@ public class WebConnection {
 
     public boolean getCode() {
         boolean foundCode = false;
+        String message = "Authorization code not found. Try again.";
         try {
             server.start();
-            Thread.sleep(10000);
+            //Thread.sleep(1);  // was 10000
 
             String query = "";
             if (!queryholder.isEmpty()) {
@@ -79,14 +80,23 @@ public class WebConnection {
                 for (int i = 0; i < holder.length; i++) {
                     if (holder[i].equals("code")) {
                         code = holder[i + 1];
-                        System.out.println(code);
                         foundCode = true;
+                        message = "Got the code. Return back to your program.";
                         break;
                     }
                 }
             }
-        } catch (InterruptedException e) {
+            client = HttpClient.newBuilder().build();
+            // need to figure out how to send this message to the browser
+            request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:8080"))
+                    //.GET(HttpRequest.BodyPublishers.ofString(message))
+                    .build();
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        } catch (IOException | InterruptedException e) {  // InterruptedException e  for thread.sleep
             e.printStackTrace();
+
         } finally {
             server.stop(1);
         }
@@ -94,12 +104,23 @@ public class WebConnection {
     }
     public String getToken() {
         String tokens = "no tokens for some reason";
+        StringBuilder body = new StringBuilder();
+        body.append("grant_type=");
+        body.append("authorization_code");
+        body.append("&code=");
+        body.append(code);
+        body.append("&redirect_uri=http://localhost:8080");
+        body.append("&client_id=");
+        body.append("6a3cee939e094944a5b8c547da47dba2");
+        body.append("&client_secret=");
+        body.append("5e527e1a1542401c9bb8e44cf189cb38");
+
         try {
-            client = HttpClient.newBuilder().build();
+            //client = HttpClient.newBuilder().build();
             request = HttpRequest.newBuilder()
                     .header("Content-Type", "application/x-www-form-urlencoded")
-                    .uri(URI.create("http://localhost:8080"))
-                    .POST(HttpRequest.BodyPublishers.ofString("login=admin&password=admin"))
+                    .uri(URI.create("https://accounts.spotify.com/api/token"))
+                    .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
                     .build();
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
             tokens = response.body();

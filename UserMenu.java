@@ -81,7 +81,7 @@ public class UserMenu {
         if (!web.getCode()) {
             return "Authorization code not found. Try again.";
         }
-
+        System.out.println(web.getToken());
 
         isAuthorized = true;
         message = "---SUCCESS---";
