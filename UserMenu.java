@@ -77,7 +77,10 @@ public class UserMenu {
         WebConnection web = new WebConnection(args);
         System.out.println("use this link to request the access code:");
         System.out.println(web.getAccessLink());
-        System.out.println(web.getCode());
+        System.out.println("waiting for code...");
+        if (!web.getCode()) {
+            return "Authorization code not found. Try again.";
+        }
 
 
         isAuthorized = true;
