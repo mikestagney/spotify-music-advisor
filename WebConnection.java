@@ -1,8 +1,6 @@
 package advisor;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.*;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -38,20 +36,19 @@ public class WebConnection {
             server = HttpServer.create();
             server.bind(new InetSocketAddress(8080), 0);
             server.createContext("/",
-                    new HttpHandler() {
-                        @Override
-                        public void handle(HttpExchange exchange) throws IOException{
-                        String hello = "Hello world";
-                        exchange.sendResponseHeaders(200, hello.length());
-                        exchange.getResponseBody().write(hello.getBytes());
-                        exchange.getResponseBody().close();
+                    exchange -> {
                         String query = exchange.getRequestURI().getQuery();
-                        if (query != null) {
+                        String message = "Authorization code not found. Try again.";
+                        if (query != null && query.contains("code")) {
+                            message = "Got the code. Return back to your program.";
                             queryholder.add(query);
                         }
-                        }
+                        exchange.sendResponseHeaders(200, message.length());
+                        exchange.getResponseBody().write(message.getBytes());
+                        exchange.getResponseBody().close();
                     }
             );
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -64,10 +61,10 @@ public class WebConnection {
 
     public boolean getCode() {
         boolean foundCode = false;
-        String message = "Authorization code not found. Try again.";
+
         try {
             server.start();
-            Thread.sleep(10000);  // was 10000
+            Thread.sleep(10000);
 
             String query = "";
             if (!queryholder.isEmpty()) {
@@ -80,21 +77,12 @@ public class WebConnection {
                     if (holder[i].equals("code")) {
                         code = holder[i + 1];
                         foundCode = true;
-                        message = "Got the code. Return back to your program.";
                         break;
                     }
                 }
             }
 
-            client = HttpClient.newBuilder().build();
-            // need to figure out how to send this message to the browser
-            request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080"))
-                    .POST(HttpRequest.BodyPublishers.ofString(message))
-                    .build();
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        } catch (IOException | InterruptedException e) {  // InterruptedException e  for thread.sleep   IOException |
+        } catch (InterruptedException e) {
             e.printStackTrace();
 
         } finally {
@@ -104,6 +92,7 @@ public class WebConnection {
     }
     public String getToken() {
         String tokens = "no tokens for some reason";
+
         StringBuilder body = new StringBuilder();
         body.append("grant_type=");
         body.append("authorization_code");
@@ -116,10 +105,10 @@ public class WebConnection {
         body.append("5e527e1a1542401c9bb8e44cf189cb38");
 
         try {
-            //client = HttpClient.newBuilder().build();
+            client = HttpClient.newBuilder().build();
             request = HttpRequest.newBuilder()
                     .header("Content-Type", "application/x-www-form-urlencoded")
-                    .uri(URI.create("https://accounts.spotify.com/api/token"))
+                    .uri(URI.create(accessServer + "/api/token"))
                     .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
                     .build();
             response = client.send(request, HttpResponse.BodyHandlers.ofString());

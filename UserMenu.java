@@ -6,7 +6,7 @@ public class UserMenu {
     Scanner input;
     String userChoice;
     boolean isAuthorized;
-    WebConnection webConnection;
+    WebConnection web;
 
     UserMenu() {
         input = new Scanner(System.in);
@@ -74,7 +74,7 @@ public class UserMenu {
         }
         if (!userChoice.equals("auth")) return message;
 
-        WebConnection web = new WebConnection(args);
+        web = new WebConnection(args);
         System.out.println("use this link to request the access code:");
         System.out.println(web.getAccessLink());
         System.out.println("waiting for code...");
