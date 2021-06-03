@@ -20,6 +20,9 @@ public class WebConnection {
     String accessLink;
     ArrayList<String> queryholder;
     String code = "";
+    final String CLIENT_ID = "6a3cee939e094944a5b8c547da47dba2";
+    final String REDIRECT_URI = "http://localhost:8080";
+    final String CLIENT_SECRET = "5e527e1a1542401c9bb8e44cf189cb38";
 
     WebConnection(String[] args){
         queryholder = new ArrayList<>();
@@ -55,8 +58,9 @@ public class WebConnection {
     }
 
     public String getAccessLink() {
-        return accessServer
-        + "/authorize?client_id=6a3cee939e094944a5b8c547da47dba2&redirect_uri=http://localhost:8080&response_type=code";
+        return accessServer + "/authorize?client_id=" + CLIENT_ID +
+                "&redirect_uri=" + REDIRECT_URI +
+                "&response_type=code";
     }
 
     public boolean getCode() {
@@ -98,11 +102,12 @@ public class WebConnection {
         body.append("authorization_code");
         body.append("&code=");
         body.append(code);
-        body.append("&redirect_uri=http://localhost:8080");
+        body.append("&redirect_uri=");
+        body.append(REDIRECT_URI);
         body.append("&client_id=");
-        body.append("6a3cee939e094944a5b8c547da47dba2");
+        body.append(CLIENT_ID);
         body.append("&client_secret=");
-        body.append("5e527e1a1542401c9bb8e44cf189cb38");
+        body.append(CLIENT_SECRET);
 
         try {
             client = HttpClient.newBuilder().build();
