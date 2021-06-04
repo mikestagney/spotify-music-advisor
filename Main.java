@@ -7,5 +7,5 @@ public class Main {
         UserMenu musicAdvisor = new UserMenu();
         musicAdvisor.runCLI(args);
 
-    }
+        }
 }

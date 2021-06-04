@@ -18,18 +18,22 @@ public class WebConnection {
     HttpResponse<String> response;
     String accessServer = "https://accounts.spotify.com";
     String accessLink;
-    ArrayList<String> queryholder;
+    String APIServerPath = "https://api.spotify.com";
+    ArrayList<String> queryHolder;
     String code = "";
     final String CLIENT_ID = "6a3cee939e094944a5b8c547da47dba2";
     final String REDIRECT_URI = "http://localhost:8080";
     final String CLIENT_SECRET = "5e527e1a1542401c9bb8e44cf189cb38";
 
     WebConnection(String[] args){
-        queryholder = new ArrayList<>();
+        queryHolder = new ArrayList<>();
         if (args.length > 1) {
             for (int i = 0; i < args.length; i++) {
                 if (args[i].equals("-access")) {
                     accessServer = args[i + 1];
+                }
+                if (args[i].equals("-resource")) {
+                    APIServerPath = args[i + 1];
                 }
             }
         }
@@ -44,7 +48,7 @@ public class WebConnection {
                         String message = "Authorization code not found. Try again.";
                         if (query != null && query.contains("code")) {
                             message = "Got the code. Return back to your program.";
-                            queryholder.add(query);
+                            queryHolder.add(query);
                         }
                         exchange.sendResponseHeaders(200, message.length());
                         exchange.getResponseBody().write(message.getBytes());
@@ -71,8 +75,8 @@ public class WebConnection {
             Thread.sleep(10000);
 
             String query = "";
-            if (!queryholder.isEmpty()) {
-                query = queryholder.get(0);
+            if (!queryHolder.isEmpty()) {
+                query = queryHolder.get(0);
             }
             if(query.contains("code")) {
                 String[] holder = query.split("=");
