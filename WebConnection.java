@@ -1,5 +1,7 @@
 package advisor;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.sun.net.httpserver.*;
 
 import java.io.IOException;
@@ -12,18 +14,19 @@ import java.util.ArrayList;
 
 public class WebConnection {
 
-    HttpServer server;
-    HttpClient client;
-    HttpRequest request;
-    HttpResponse<String> response;
-    String accessServer = "https://accounts.spotify.com";
-    String accessLink;
-    String APIServerPath = "https://api.spotify.com";
-    ArrayList<String> queryHolder;
-    String code = "";
-    final String CLIENT_ID = "6a3cee939e094944a5b8c547da47dba2";
-    final String REDIRECT_URI = "http://localhost:8080";
-    final String CLIENT_SECRET = "5e527e1a1542401c9bb8e44cf189cb38";
+    private HttpServer server;
+    private HttpClient client;
+    private HttpRequest request;
+    private HttpResponse<String> response;
+    private String accessServer = "https://accounts.spotify.com";
+    private String accessLink;
+    String accessToken;
+    private String APIServerPath = "https://api.spotify.com";
+    private ArrayList<String> queryHolder;
+    private String code = "";
+    private final String CLIENT_ID = "6a3cee939e094944a5b8c547da47dba2";
+    private final String REDIRECT_URI = "http://localhost:8080";
+    private final String CLIENT_SECRET = "5e527e1a1542401c9bb8e44cf189cb38";
 
     WebConnection(String[] args){
         queryHolder = new ArrayList<>();
@@ -98,7 +101,8 @@ public class WebConnection {
         }
         return foundCode;
     }
-    public String getToken() {
+    public boolean getToken() {
+        Boolean gotToken = false;
         String tokens = "no tokens for some reason";
 
         StringBuilder body = new StringBuilder();
@@ -124,11 +128,24 @@ public class WebConnection {
             if (response.body() != null) {
                 tokens = response.body();
             }
+            JsonObject jo = JsonParser.parseString(tokens).getAsJsonObject();
+            accessToken = jo.get("access_token").getAsString();
+            gotToken = true;
 
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
-        return tokens;
+        return gotToken;
     }
+
+    public String apiRequest() {
+
+
+
+
+
+        return "";
+    }
+
 
 }

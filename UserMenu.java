@@ -81,15 +81,16 @@ public class UserMenu {
         if (!web.getCode()) {
             return "Authorization code not found. Try again.";
         }
-        System.out.println(web.getToken());
-
-        isAuthorized = true;
-        message = "---SUCCESS---";
-
+        System.out.println("code received");
+        System.out.println("Making http request for access_token...");
+        if (web.getToken()) {
+            isAuthorized = true;
+            message = "Success!";
+        }
         return message;
     }
     private void exitApp() {
-        System.out.println("---GOODBYE!---");
+        //System.out.println("---GOODBYE!---");
         System.exit(0);
     }
 
