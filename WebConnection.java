@@ -26,7 +26,7 @@ public class WebConnection {
     private String code = "";
     private final String CLIENT_ID = "6a3cee939e094944a5b8c547da47dba2";
     private final String REDIRECT_URI = "http://localhost:8080";
-    private final String CLIENT_SECRET = "5e527e1a1542401c9bb8e44cf189cb38";
+    private final String CLIENT_SECRET = "bce33fab8ed34013841455fc221b4d16";
 
     WebConnection(String[] args){
         queryHolder = new ArrayList<>();
@@ -138,13 +138,25 @@ public class WebConnection {
         return gotToken;
     }
 
-    public String apiRequest() {
+    public String apiRequest(String urlTail) {
+        String json = "something didn't work";
+        String limiter = "?limit=20";
+        try {
+            request = HttpRequest.newBuilder()
+                    .header("Authorization", "Bearer " + accessToken)
+                    .uri(URI.create(APIServerPath + urlTail + limiter))
+                    .GET()
+                    .build();
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.body() != null) {
+                json = response.body();
+            }
 
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
 
-
-
-
-        return "";
+        return json;
     }
 
 

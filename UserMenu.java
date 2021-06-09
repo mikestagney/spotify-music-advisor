@@ -7,6 +7,7 @@ public class UserMenu {
     String userChoice;
     boolean isAuthorized;
     WebConnection web;
+    String json;
 
     UserMenu() {
         input = new Scanner(System.in);
@@ -22,50 +23,41 @@ public class UserMenu {
         }
         switch (userChoice) {
             case("new"):
-                System.out.println(newReleases());
+                json = newReleases();
+                NewAlbums albums = new NewAlbums(json);
                 break;
             case("featured"):
-                System.out.println(featured());
+                json = featured();
+                Featured featured = new Featured(json);
                 break;
             case("categories"):
-                System.out.println(categories());
-                break;
-            case("playlists Mood"):
-                System.out.println(moodPlaylists());
+                json = categories();
+                CategoryArchive cat = new CategoryArchive(json);
                 break;
             case("exit"):
                 exitApp();
+                break;
+            default:
+                if (userChoice.contains("playlists")) {
+                    System.out.println(playlists());
+                }
                 break;
         }
     } while (true);
 }
     private String newReleases() {
-        return "---NEW RELEASES---\n" +
-                "Clockwork Angels [Rush]\n" +
-                "Fear Inoculum [Tool]\n" +
-                "Apex [Unleash The Archers]\n" +
-                "Liquid Tension Experiment 3 [Liquid Tension Experiment]";
+        return web.apiRequest("/v1/browse/new-releases");
     }
     private String featured() {
-        return "---FEATURED---\n" +
-                "Songs to wake up to\n" +
-                "Songs you don't want to wake up to\n" +
-                "None of the junk you hear on the radio\n" +
-                "Pop (radio junk)";
+        return web.apiRequest("/v1/browse/featured-playlists");
     }
     private String categories() {
-        return "---CATEGORIES---\n" +
-                "Rock\n" +
-                "Rap\n" +
-                "Funk\n" +
-                "No Country for old men";
+        return web.apiRequest("/v1/browse/categories");
     }
-    private String moodPlaylists() {
-        return "---MOOD PLAYLISTS---\n" +
-                "Workout Time\n" +
-                "Before the Game\n" +
-                "Love in the Air\n" +
-                "Last line of the project";
+    private String playlists() {
+
+
+        return userChoice.substring(10);
     }
     private String getAuthorization(String[] args) {
         String message = "Please, provide access for application.";
