@@ -1,0 +1,14 @@
+package advisor;
+
+public class Album {
+    private String url;
+    private String albumName;
+    private String artists;
+
+    Album(String name, String artist, String url) {
+        albumName = name;
+        artists = artist;
+        this.url = url;
+    }
+
+}

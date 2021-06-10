@@ -7,23 +7,20 @@ import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 
-public class Featured {
+public class PlaylistParser {
 
     ArrayList<Playlist> featuredPlaylists = new ArrayList<>();
 
-    Featured(String json) {
+    PlaylistParser(String json) {
         JsonObject jo = JsonParser.parseString(json).getAsJsonObject();
 
         JsonObject playlists = jo.getAsJsonObject("playlists");
-        System.out.println(playlists.toString());
         JsonArray items = playlists.getAsJsonArray("items");
-        System.out.println(items.toString());
 
         for (JsonElement element : items) {
             JsonObject item = element.getAsJsonObject();
             String name = item.get("name").getAsString();
             System.out.println(name);
-
 
             JsonObject externalLinks = item.getAsJsonObject("external_urls");
 
@@ -33,7 +30,6 @@ public class Featured {
             Playlist playlist = new Playlist(name, url);
             featuredPlaylists.add(playlist);
         }
-
 
     }
 

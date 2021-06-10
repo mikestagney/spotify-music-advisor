@@ -21,14 +21,27 @@ public class CategoryArchive {
             String url = item.get("href").getAsString();
             String id = item.get("id").getAsString();
             String name = item.get("name").getAsString();
-            
-            System.out.println(name);
             Category category = new Category(name, id, url);
             categoryList.add(category);
         }
 
-
     }
-
-
+    public String getCategoryID(String name) {
+        String id = "";
+        for (Category current: categoryList) {
+            if (name.equals(current.getName())) {
+                id = current.getId();
+                break;
+            }
+        }
+        return id;
+    }
+    public String toString() {
+        StringBuilder categories = new StringBuilder();
+        for (Category current: categoryList) {
+            categories.append(current.getName());
+            categories.append("\n");
+        }
+        return categories.toString();
+    }
 }

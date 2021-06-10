@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class NewAlbums {
 
-    ArrayList<Playlist> newAlbums = new ArrayList<>();
+    ArrayList<Album> newAlbums = new ArrayList<>();
 
     NewAlbums(String json) {
         JsonObject jo = JsonParser.parseString(json).getAsJsonObject();
@@ -45,9 +45,9 @@ public class NewAlbums {
             String url = externalLinks.get("spotify").getAsString();
             System.out.println(url);
             System.out.println();
-            /*
-            Playlist playlist = new Playlist(url, name);
-            newAlbums.add(playlist);*/
+
+            Album album = new Album(albumName, allArtists.toString(), url);
+            newAlbums.add(album);
         }
 
 

@@ -8,6 +8,9 @@ public class UserMenu {
     boolean isAuthorized;
     WebConnection web;
     String json;
+    NewAlbums albums;
+    PlaylistParser featured;
+    CategoryArchive categories;
 
     UserMenu() {
         input = new Scanner(System.in);
@@ -21,43 +24,56 @@ public class UserMenu {
             System.out.println(getAuthorization(args));
             continue;
         }
+        if (categories == null) {
+            categories();
+        }
         switch (userChoice) {
             case("new"):
-                json = newReleases();
-                NewAlbums albums = new NewAlbums(json);
+                newReleases();
                 break;
             case("featured"):
-                json = featured();
-                Featured featured = new Featured(json);
+                featured();
                 break;
             case("categories"):
-                json = categories();
-                CategoryArchive cat = new CategoryArchive(json);
+                System.out.println(categories.toString());
                 break;
             case("exit"):
                 exitApp();
                 break;
             default:
                 if (userChoice.contains("playlists")) {
-                    System.out.println(playlists());
+                    playlists();
                 }
                 break;
         }
     } while (true);
 }
-    private String newReleases() {
-        return web.apiRequest("/v1/browse/new-releases");
+    private void newReleases() {
+        json = web.apiRequest("/v1/browse/new-releases");
+        albums = new NewAlbums(json);
     }
-    private String featured() {
-        return web.apiRequest("/v1/browse/featured-playlists");
+    private void featured() {
+        json = web.apiRequest("/v1/browse/featured-playlists");
+        featured = new PlaylistParser(json);
     }
-    private String categories() {
-        return web.apiRequest("/v1/browse/categories");
+    private void categories() {
+        json = web.apiRequest("/v1/browse/categories");
+        categories = new CategoryArchive(json);
     }
-    private String playlists() {
+    private void playlists() {
+        String playlist = userChoice.substring(10);
+        String categoryID = categories.getCategoryID(playlist);
+        if (categoryID.equals("")) {
+            System.out.println("Unknown category name.");
+            return;
+        }
+        json = web.apiRequest("/v1/browse/categories/" + categoryID + "/playlists");
+        if (json.contains("error")) {
+            System.out.println(web.parseError(json));
+            return;
+        }
+        PlaylistParser detailedPlaylist = new PlaylistParser(json);
 
-
-        return userChoice.substring(10);
     }
     private String getAuthorization(String[] args) {
         String message = "Please, provide access for application.";
@@ -82,7 +98,6 @@ public class UserMenu {
         return message;
     }
     private void exitApp() {
-        //System.out.println("---GOODBYE!---");
         System.exit(0);
     }
 

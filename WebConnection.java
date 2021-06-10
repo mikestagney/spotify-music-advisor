@@ -155,9 +155,17 @@ public class WebConnection {
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
-
         return json;
     }
+    public String parseError(String json) {
+        JsonObject jo = JsonParser.parseString(json).getAsJsonObject();
 
+        JsonObject error = jo.getAsJsonObject("error");
+
+        return error.get("message").getAsString();
+
+
+
+    }
 
 }
