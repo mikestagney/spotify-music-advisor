@@ -18,10 +18,9 @@ public class CategoryArchive {
 
         for (JsonElement element : items) {
             JsonObject item = element.getAsJsonObject();
-            String url = item.get("href").getAsString();
             String id = item.get("id").getAsString();
             String name = item.get("name").getAsString();
-            Category category = new Category(name, id, url);
+            Category category = new Category(name, id);
             categoryList.add(category);
         }
 
@@ -36,11 +35,14 @@ public class CategoryArchive {
         }
         return id;
     }
+
     public String toString() {
         StringBuilder categories = new StringBuilder();
         for (Category current: categoryList) {
+            categories.append(current.toString());
+            /*
             categories.append(current.getName());
-            categories.append("\n");
+            categories.append("\n");*/
         }
         return categories.toString();
     }

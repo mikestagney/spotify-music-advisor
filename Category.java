@@ -1,12 +1,10 @@
 package advisor;
 
 public class Category {
-    private String url;
     private String name;
     private String id;
 
-    Category(String name, String id, String url) {
-        this.url = url;
+    Category(String name, String id) {
         this.name = name;
         this.id = id;
     }

@@ -27,7 +27,6 @@ public class UserMenu {
             }
         }
 
-
         do {
         userChoice = input.nextLine();
         if (!isAuthorized) {

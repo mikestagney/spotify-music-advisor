@@ -26,7 +26,7 @@ public class WebConnection {
     private String code = "";
     private final String CLIENT_ID = "6a3cee939e094944a5b8c547da47dba2";
     private final String REDIRECT_URI = "http://localhost:8080";
-    private final String CLIENT_SECRET = "bce33fab8ed34013841455fc221b4d16";
+    private final String CLIENT_SECRET = "f6293b30601e400a851ae3027179fa7c";
 
     WebConnection(String[] args){
         queryHolder = new ArrayList<>();
