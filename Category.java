@@ -1,6 +1,6 @@
 package advisor;
 
-public class Category {
+public class Category extends Recommendation {
     private String name;
     private String id;
 

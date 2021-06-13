@@ -3,7 +3,7 @@ package advisor;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class UserMenu {
+public class UserMenu<T> {
     Scanner input;
     String userChoice;
     boolean isAuthorized;
@@ -13,6 +13,9 @@ public class UserMenu {
     PlaylistParser featured;
     CategoryArchive categories;
     int numItemsPage = 5;
+    ArrayList<T> recommendList;
+    int currentPageNum = 1;
+    int itemCounter = 0;
 
     UserMenu() {
         input = new Scanner(System.in);
@@ -45,10 +48,20 @@ public class UserMenu {
                 featured();
                 break;
             case("categories"):
-                printRecommendations(categories.getList());
+                //printRecommendations(categories.getList());
                 break;
             case("exit"):
                 exitApp();
+                break;
+            case("next"):
+                currentPageNum++;
+                itemCounter += numItemsPage;
+                printRecommendations();
+                break;
+            case("prev"):
+                currentPageNum--;
+                itemCounter -= numItemsPage;
+                printRecommendations();
                 break;
             default:
                 if (userChoice.contains("playlists")) {
@@ -61,12 +74,14 @@ public class UserMenu {
     private void newReleases() {
         json = web.apiRequest("/v1/browse/new-releases");
         albums = new NewAlbums(json);
-        printRecommendations(albums.getList());
+        resetPagination();
+        recommendList = (ArrayList<T>) albums.getList();
+        printRecommendations();
     }
     private void featured() {
         json = web.apiRequest("/v1/browse/featured-playlists");
         featured = new PlaylistParser(json);
-        printRecommendations(featured.getList());
+        //printRecommendations(featured.getList());
     }
     private void categories() {
         json = web.apiRequest("/v1/browse/categories");
@@ -85,12 +100,36 @@ public class UserMenu {
             return;
         }
         PlaylistParser detailedPlaylist = new PlaylistParser(json);
-        printRecommendations(detailedPlaylist.getList());
+        //printRecommendations(detailedPlaylist.getList());
     }
-    private <T> void printRecommendations(ArrayList<T> list) {
-        for (T current: list) {
-            System.out.println(current.toString());
+    private void resetPagination() {
+        currentPageNum = 1;
+        itemCounter = 0;
+    }
+
+
+    private void printRecommendations() {
+        int totalPages = recommendList.size() / numItemsPage;
+        totalPages = recommendList.size() / numItemsPage != 0 ? totalPages++ : totalPages;
+
+        if (currentPageNum > totalPages) {
+            System.out.println("No more pages");
+            currentPageNum = totalPages;
+            itemCounter -= numItemsPage;
+            return;
         }
+        if (currentPageNum < 1) {
+            System.out.println("No more pages");
+            currentPageNum = 1;
+            itemCounter += numItemsPage;
+            return;
+        }
+
+        for (int i = itemCounter; i < itemCounter + numItemsPage; i++) {
+            System.out.println(recommendList.get(i).toString());
+        }
+        System.out.printf("---PAGE %d OF %d---\n", currentPageNum , totalPages);
+
     }
 
     private String getAuthorization(String[] args) {
