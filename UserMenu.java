@@ -1,5 +1,6 @@
 package advisor;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class UserMenu {
@@ -44,7 +45,7 @@ public class UserMenu {
                 featured();
                 break;
             case("categories"):
-                System.out.println(categories.toString());
+                printRecommendations(categories.getList());
                 break;
             case("exit"):
                 exitApp();
@@ -60,10 +61,12 @@ public class UserMenu {
     private void newReleases() {
         json = web.apiRequest("/v1/browse/new-releases");
         albums = new NewAlbums(json);
+        printRecommendations(albums.getList());
     }
     private void featured() {
         json = web.apiRequest("/v1/browse/featured-playlists");
         featured = new PlaylistParser(json);
+        printRecommendations(featured.getList());
     }
     private void categories() {
         json = web.apiRequest("/v1/browse/categories");
@@ -82,8 +85,14 @@ public class UserMenu {
             return;
         }
         PlaylistParser detailedPlaylist = new PlaylistParser(json);
-
+        printRecommendations(detailedPlaylist.getList());
     }
+    private <T> void printRecommendations(ArrayList<T> list) {
+        for (T current: list) {
+            System.out.println(current.toString());
+        }
+    }
+
     private String getAuthorization(String[] args) {
         String message = "Please, provide access for application.";
         if (userChoice.equals("exit")) {
@@ -109,5 +118,4 @@ public class UserMenu {
     private void exitApp() {
         System.exit(0);
     }
-
 }

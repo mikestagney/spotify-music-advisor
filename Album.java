@@ -11,4 +11,10 @@ public class Album {
         this.url = url;
     }
 
+    @Override
+    public String toString() {
+        return albumName + "\n" +
+               artists + "\n" +
+               url + "\n";
+    }
 }

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class CategoryArchive {
 
-    ArrayList<Category> categoryList = new ArrayList<>();
+    private ArrayList<Category> categoryList = new ArrayList<>();
 
     CategoryArchive(String json) {
         JsonObject jo = JsonParser.parseString(json).getAsJsonObject();
@@ -36,13 +36,14 @@ public class CategoryArchive {
         return id;
     }
 
+    public ArrayList<Category> getList() {
+        return categoryList;
+    }
+
     public String toString() {
         StringBuilder categories = new StringBuilder();
         for (Category current: categoryList) {
             categories.append(current.toString());
-            /*
-            categories.append(current.getName());
-            categories.append("\n");*/
         }
         return categories.toString();
     }

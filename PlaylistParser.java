@@ -20,18 +20,18 @@ public class PlaylistParser {
         for (JsonElement element : items) {
             JsonObject item = element.getAsJsonObject();
             String name = item.get("name").getAsString();
-            System.out.println(name);
 
             JsonObject externalLinks = item.getAsJsonObject("external_urls");
 
             String url = externalLinks.get("spotify").getAsString();
-            System.out.println(url);
-            System.out.println();
+
             Playlist playlist = new Playlist(name, url);
             featuredPlaylists.add(playlist);
         }
 
     }
 
-
+    public ArrayList<Playlist> getList() {
+        return featuredPlaylists;
+    }
 }

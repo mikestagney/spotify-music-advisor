@@ -11,4 +11,8 @@ public class Playlist {
 
     }
 
+    @Override
+    public String toString() {
+        return name + "\n" + url + "\n";
+    }
 }

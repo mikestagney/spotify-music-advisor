@@ -20,7 +20,6 @@ public class NewAlbums {
             JsonObject item = element.getAsJsonObject();
 
             String albumName = item.get("name").getAsString();
-            System.out.println(albumName);
 
             StringBuilder allArtists = new StringBuilder();
             allArtists.append("[");
@@ -39,21 +38,17 @@ public class NewAlbums {
 
             }
             allArtists.append("]");
-            System.out.println(allArtists);
 
             JsonObject externalLinks = item.getAsJsonObject("external_urls");
             String url = externalLinks.get("spotify").getAsString();
-            System.out.println(url);
-            System.out.println();
 
             Album album = new Album(albumName, allArtists.toString(), url);
             newAlbums.add(album);
         }
 
-
-
-
     }
-
+    public ArrayList<Album> getList() {
+        return newAlbums;
+    }
 
 }
