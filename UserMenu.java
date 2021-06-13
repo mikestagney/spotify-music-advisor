@@ -15,7 +15,7 @@ public class UserMenu<T> {
     int numItemsPage = 5;
     ArrayList<T> recommendList;
     int currentPageNum = 1;
-    int itemCounter = 0;
+    int itemPointer = 0;
 
     UserMenu() {
         input = new Scanner(System.in);
@@ -48,19 +48,21 @@ public class UserMenu<T> {
                 featured();
                 break;
             case("categories"):
-                //printRecommendations(categories.getList());
+                resetPagination();
+                recommendList = (ArrayList<T>) categories.getList();
+                printRecommendations();
                 break;
             case("exit"):
                 exitApp();
                 break;
             case("next"):
                 currentPageNum++;
-                itemCounter += numItemsPage;
+                itemPointer += numItemsPage;
                 printRecommendations();
                 break;
             case("prev"):
                 currentPageNum--;
-                itemCounter -= numItemsPage;
+                itemPointer -= numItemsPage;
                 printRecommendations();
                 break;
             default:
@@ -81,7 +83,9 @@ public class UserMenu<T> {
     private void featured() {
         json = web.apiRequest("/v1/browse/featured-playlists");
         featured = new PlaylistParser(json);
-        //printRecommendations(featured.getList());
+        resetPagination();
+        recommendList = (ArrayList<T>) featured.getList();
+        printRecommendations();
     }
     private void categories() {
         json = web.apiRequest("/v1/browse/categories");
@@ -100,32 +104,39 @@ public class UserMenu<T> {
             return;
         }
         PlaylistParser detailedPlaylist = new PlaylistParser(json);
-        //printRecommendations(detailedPlaylist.getList());
+        resetPagination();
+        recommendList = (ArrayList<T>) detailedPlaylist.getList();
+        printRecommendations();
     }
     private void resetPagination() {
         currentPageNum = 1;
-        itemCounter = 0;
+        itemPointer = 0;
     }
-
 
     private void printRecommendations() {
         int totalPages = recommendList.size() / numItemsPage;
-        totalPages = recommendList.size() / numItemsPage != 0 ? totalPages++ : totalPages;
+
+        int mod = recommendList.size() % numItemsPage;
+        if (mod > 0) totalPages++;
 
         if (currentPageNum > totalPages) {
             System.out.println("No more pages");
             currentPageNum = totalPages;
-            itemCounter -= numItemsPage;
+            itemPointer -= numItemsPage;
             return;
         }
         if (currentPageNum < 1) {
             System.out.println("No more pages");
             currentPageNum = 1;
-            itemCounter += numItemsPage;
+            itemPointer += numItemsPage;
             return;
         }
+        int upperLimit = itemPointer + numItemsPage;
+        if (upperLimit > recommendList.size()) {
+            upperLimit = mod + itemPointer;
+        }
 
-        for (int i = itemCounter; i < itemCounter + numItemsPage; i++) {
+        for (int i = itemPointer; i < upperLimit; i++) {
             System.out.println(recommendList.get(i).toString());
         }
         System.out.printf("---PAGE %d OF %d---\n", currentPageNum , totalPages);
