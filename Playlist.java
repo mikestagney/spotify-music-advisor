@@ -1,6 +1,6 @@
 package advisor;
 
-public class Playlist extends Recommendation{
+public class Playlist {
 
     private String name;
     private String url;

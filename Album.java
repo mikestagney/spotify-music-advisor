@@ -1,6 +1,6 @@
 package advisor;
 
-public class Album extends Recommendation {
+public class Album  {
     private String url;
     private String albumName;
     private String artists;

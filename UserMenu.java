@@ -16,6 +16,8 @@ public class UserMenu<T> {
     ArrayList<T> recommendList;
     int currentPageNum = 1;
     int itemPointer = 0;
+    int totalPages;
+    int remainder;
 
     UserMenu() {
         input = new Scanner(System.in);
@@ -48,8 +50,8 @@ public class UserMenu<T> {
                 featured();
                 break;
             case("categories"):
-                resetPagination();
                 recommendList = (ArrayList<T>) categories.getList();
+                resetPagination();
                 printRecommendations();
                 break;
             case("exit"):
@@ -76,15 +78,15 @@ public class UserMenu<T> {
     private void newReleases() {
         json = web.apiRequest("/v1/browse/new-releases");
         albums = new NewAlbums(json);
-        resetPagination();
         recommendList = (ArrayList<T>) albums.getList();
+        resetPagination();
         printRecommendations();
     }
     private void featured() {
         json = web.apiRequest("/v1/browse/featured-playlists");
         featured = new PlaylistParser(json);
-        resetPagination();
         recommendList = (ArrayList<T>) featured.getList();
+        resetPagination();
         printRecommendations();
     }
     private void categories() {
@@ -104,21 +106,19 @@ public class UserMenu<T> {
             return;
         }
         PlaylistParser detailedPlaylist = new PlaylistParser(json);
-        resetPagination();
         recommendList = (ArrayList<T>) detailedPlaylist.getList();
+        resetPagination();
         printRecommendations();
     }
     private void resetPagination() {
         currentPageNum = 1;
         itemPointer = 0;
+        totalPages = recommendList.size() / numItemsPage;
+        remainder = recommendList.size() % numItemsPage;
+        if (remainder > 0) totalPages++;
     }
 
     private void printRecommendations() {
-        int totalPages = recommendList.size() / numItemsPage;
-
-        int mod = recommendList.size() % numItemsPage;
-        if (mod > 0) totalPages++;
-
         if (currentPageNum > totalPages) {
             System.out.println("No more pages");
             currentPageNum = totalPages;
@@ -133,7 +133,7 @@ public class UserMenu<T> {
         }
         int upperLimit = itemPointer + numItemsPage;
         if (upperLimit > recommendList.size()) {
-            upperLimit = mod + itemPointer;
+            upperLimit = remainder + itemPointer;
         }
 
         for (int i = itemPointer; i < upperLimit; i++) {
