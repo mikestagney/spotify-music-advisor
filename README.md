@@ -47,6 +47,18 @@ Once authenticated in, the options are:
 
 Fourteenth project created for JetBrains Academy Java Developer course - hard level project.
 
+### How to Run
+
+The app can run with or without command line arguments.
+
+Parses 3 arguments: -access, -resource, -page 
+  
+-access: authorization server path. The default value is https://accounts.spotify.com
+
+-resource: API server path. The default value is https://api.spotify.com
+
+-page: number of entries shown on a page. The default value is 5.
+
 ### Sample input and output:
 
 \> new\
